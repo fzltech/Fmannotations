@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net8.0;net9.0;net10.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
+    <!--
+      Public signing, with a public-key-only key file. The package needs a public key token so a
+      signed target can reference it (CS8002), but it is not an identity guarantee: the private
+      key is deliberately not in the repository, so nobody can forge our signature. Rotating the
+      identity means generating a new pair with `sn -k`, extracting the public half with
+      `sn -p fmverify.snk fmverify.public.snk`, and replacing the file here.
+    -->
+    <PublicSign>true</PublicSign>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>fmverify.snk</AssemblyOriginatorKeyFile>
+    <PackageId>Fmverify.Annotations</PackageId>
+    <!--
+      The repository VERSION file is the single home for the published package version. The release
+      workflow writes it, and both this project and PinnedVersions.AnnotationsPackage read it.
+    -->
+    <Version>$([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)../../VERSION').Trim())</Version>
+    <Authors>fmverify contributors</Authors>
+    <Description>Attributes to declare formal verification contracts ([Requires], [Ensures], [Invariant], [Measure], [Step], [Deterministic]).</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fmverify.Annotations.Analyzers\Fmverify.Annotations.Analyzers.csproj"
+                      PrivateAssets="all"
+                      ReferenceOutputAssembly="false" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Fmverify.Annotations.Analyzers\bin\$(Configuration)\netstandard2.0\Fmverify.Annotations.Analyzers.dll"
+          Pack="true"
+          PackagePath="analyzers/dotnet/cs"
+          Visible="false" />
+  </ItemGroup>
+
+</Project>

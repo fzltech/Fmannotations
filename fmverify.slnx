@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="src/Fmverify.Annotations/Fmverify.Annotations.csproj" />
+  <Project Path="src/Fmverify.Annotations.Analyzers/Fmverify.Annotations.Analyzers.csproj" />
+  <Project Path="test/Fmannotations.Tests/Fmannotations.Tests.csproj" />
+</Solution>

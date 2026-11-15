@@ -1,0 +1,25 @@
+# .NET
+bin/
+obj/
+*.user
+.vs/
+
+# Rider / IDE
+.idea/
+
+# Test / coverage
+[Tt]est[Rr]esults/
+*.coverage
+coverage.*.xml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Agent scratch
+.superpowers/
+.claude/worktrees/
+graphify-out
+
+# Fetched packages; rebuilt, never committed.
+.packages/

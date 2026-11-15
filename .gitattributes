@@ -1,0 +1,6 @@
+# Shell scripts the tool emits must stay LF in this repository. They are embedded as
+# resources, so a CRLF checkout would travel into every generated layer and break bash on
+# any adopter's Linux CI. ScaffoldPlan normalises .sh output as well; this keeps the source
+# honest so the two never disagree.
+*.sh.tmpl text eol=lf
+*.sh      text eol=lf

@@ -1,0 +1,51 @@
+name: Publish Fmverify.Annotations
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Read package version
+        id: version
+        run: |
+          VERSION=$(tr -d '[:space:]' < VERSION)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Package version: $VERSION"
+
+      - name: Tag release (if missing)
+        run: |
+          TAG="v${{ steps.version.outputs.version }}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists."
+          else
+            git tag "$TAG"
+            git push origin "$TAG"
+          fi
+
+      - name: Prepare local feed
+        run: mkdir -p .packages
+
+      - name: Pack annotations
+        run: bash pack-annotations.sh
+
+      - name: Push to GitHub Packages
+        run: |
+          dotnet nuget push .packages/*.nupkg \
+            --source "https://nuget.pkg.github.com/fzltech/index.json" \
+            --api-key "${{ secrets.GITHUB_TOKEN }}" \
+            --skip-duplicate
